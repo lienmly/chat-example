@@ -33,14 +33,22 @@ $(document).ready(function () {
     $('#messages').append($('<li>').text(data.nickname + ': ' + data.message));
     // $('div#whotyping').html('');
   });
-  socket.on('user connected', function(connectedMsg){
-    $('#messages').append($('<li>').text(connectedMsg));
+  socket.on('user connected', function(data){ // Data = socket.id
+    $('#messages').append($('<li>').text('A user just joined.'));
   });
   socket.on('text change', function(userName){
     $('div#whotyping').html(userName + ' is typing');
   });
   socket.on('text unfocus', function(userName){
     $('div#whotyping').html('');
+  });
+  socket.on('client online', function(userName){
+    $('#whoonline').append($('<li>').text(userName + ' is online.').attr('id',userName + 'isonline'));
+  });
+  socket.on('user disconnect', function(data){
+    // alert(data + ' just disconnected.');
+    let listid = '#' + data + 'isonline';
+    $(listid).remove();
   });
 
   // Nickname input function
@@ -56,5 +64,8 @@ $(document).ready(function () {
     else {
       alert('Enter your name!');
     }
+
+    // Fire an event to let everyone know this client is online
+    socket.emit('client online', userName);
   });
 });

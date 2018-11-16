@@ -11,13 +11,15 @@ app.use(express.static('public'));
 // });
 
 io.on('connection', function(socket){
+  var USER_NAME = '';
   console.log('a user connected ' + socket.id);
 
   // Broadcast a message to connected users when someone connects or disconnects.
-  socket.broadcast.emit('user connected', 'A user just joined.')
+  socket.broadcast.emit('user connected', socket.id)
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
+    socket.broadcast.emit('user disconnect', USER_NAME); 
   });
 
   socket.on('chat message', function(data){
@@ -30,8 +32,12 @@ io.on('connection', function(socket){
     socket.broadcast.emit('text change', userName);
   });
   socket.on('text unfocus', function(userName){
-    socket.broadcast.emit('text unfocus', userName); 
+    socket.broadcast.emit('text unfocus', userName);
   });
+  socket.on('client online', function(userName){
+    socket.broadcast.emit('client online', userName);
+    USER_NAME = userName;
+  })
 });
 
 // App setup
