@@ -25,6 +25,13 @@ io.on('connection', function(socket){
     socket.broadcast.emit('chat message', data);
     console.log('message: ' + data.message);
   });
+
+  socket.on('text change', function(userName){
+    socket.broadcast.emit('text change', userName);
+  });
+  socket.on('text unfocus', function(userName){
+    socket.broadcast.emit('text unfocus', userName); 
+  });
 });
 
 // App setup

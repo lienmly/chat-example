@@ -20,13 +20,27 @@ $(document).ready(function () {
     return false;
   });
 
+  $('#m').focus(function(){
+    socket.emit('text change', userName);
+  });
+  $('#m').focusout(function(){
+    socket.emit('text unfocus', userName);
+  });
+
   // Listen for events
   socket.on('chat message', function(data){
-    console.log('Client: ' + data.nickname + ': ' + data.message); 
+    console.log('Client: ' + data.nickname + ': ' + data.message);
     $('#messages').append($('<li>').text(data.nickname + ': ' + data.message));
+    // $('div#whotyping').html('');
   });
   socket.on('user connected', function(connectedMsg){
     $('#messages').append($('<li>').text(connectedMsg));
+  });
+  socket.on('text change', function(userName){
+    $('div#whotyping').html(userName + ' is typing');
+  });
+  socket.on('text unfocus', function(userName){
+    $('div#whotyping').html('');
   });
 
   // Nickname input function
