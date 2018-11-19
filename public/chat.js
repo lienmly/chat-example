@@ -10,10 +10,20 @@ $(document).ready(function () {
     // socket.emit('chat message', $('#m').val());
     submittedData = {
       message: $('#m').val(),
-      nickname: userName
+      nickname: userName,
+      private: false,
+      toUser: null
     };
 
+    if (submittedData.message.toLowerCase().indexOf("pm/") == 0) {
+      submittedData.private = true;
+      submittedData.toUser = submittedData.message.split("/")[1];
+      submittedData.message = submittedData.message.split("/")[2];
+    }
+
+    // Send message to sender directly, without through server
     $('#messages').append($('<li>').text(submittedData.nickname + ': ' + submittedData.message));
+
     socket.emit('chat message', submittedData);
     $('#m').val('');
 
